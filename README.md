@@ -1,38 +1,42 @@
-# Netytar
-A monophonic software ADMI (Accessible Digital Musical Instrument) playable hands-free through gaze and breath. It is dedicated to musicians who cannot control their hands (e.g. with quadriplegic disability). It has been developed as part of my Master Thesis in Computer Engineering, and maintained as part of my PhD studies and thesis.
+<h1 align="center">
+  <img src="Netytar.svg" alt="Netytar" width="300">
+</h1>
 
-Please check the [Netytar page](https://neeqstock.github.io/netytar/) on my personal website for instrument description and details!
-Read carefully this Readme to be able to succesfully install and run it.
+*An Accessible Digital Musical Instrument for playing melodies.*
 
-## System requirements
-Netytar is only compatible with Microsoft Windows operating systems, at the present moment. It has been tested on Windows 10; I still didn't check its compatibility with previous Windows versions.
+Please refer to the [Netytar page](https://neeqstock.notion.site/Netytar-b61e054d327e4543a2b8bb135359d58b) on Nicola Davanzo's personal website for more informations, instrument description and usage guide.
 
-## Hardware requirements
-In order to play Netytar as an instrument, the following hardware is required:
-- A Tobii Eye Tracker. Netytar has been tested with Tobii EyeX, Tobii 4C (both of these are out of production) and should be compatible with the newer [Tobii Eye Tracker 5](https://gaming.tobii.com/product/eye-tracker-5/);
-- (Optional, but required if the user doesn't have control over their hands): Netytar's Breath Sensor. It is buildable for around 20€/25$ without any specific knowledge in electronics using Arduino microcontroller, a sensor, and some parts you can probably find in your local DIY/Bricolage store. A [guide to build it](https://neeqstock.github.io/sensors/) is available in my personal website;
+</br><div align="center">
+    <img src="NetytarLogo.png" width="150px" alt="Netytar logo">    
 
-If you don't have one or both these components, you can still download and test Netytar on your PC using your mouse instead of the eye tracker to select notes, and your keyboard to play them in the place of the breath sensor.
+</div></br>
 
-## Software requirements and dependencies
-According to your configuration, you may need:
-- Microsoft [.NET Framework Runtime](https://go.microsoft.com/fwlink/?LinkId=2085155). Download and install it normally;
-- [Digital-7 Font](https://www.dafont.com/digital-7.font), downloadable from DaFont. Click on "Download", extract the archive then right click on each font file and Install it for your user or all users;
+## Requirements
+- A computer equipped with a Windows operating system
+- Any sensor capable of moving the mouse cursor, which will be used for chord selection and to navigate the interface
+    - _(Suggested)_ an eye tracker, with some proper software
+    - _(Suggested)_ an eye tracker, with a NITH wrapper software
+- Any of these NITH sensors, which will control note onset and offset, intensity and dynamics
+    - [NITHbreathSensor](https://neeqstock.notion.site/NITHbreathSensor-5010DP-b23a43406b4d432d974a42bbe0f63695) - which provides the original interaction method for which Netytar was thought for
+	- [NITHheadTracker](https://neeqstock.notion.site/NITHheadTracker-BNO055-eda9cb4d752c45869abd85d06a1d7e5d)
+    - [NITHbiteSensor](https://neeqstock.notion.site/NITHbiteSensor-FSR-d0dabadc9abe470eb583985b22f3d2a9)
 
-## Give it a sound!
-Netytar is a mute MIDI controller/interface. Windows operating systems already To give it a sound, you can:
-- Create a MIDI loop inside your PC, in order to use it as an audio synthesizer. Check the [VST guide](https://neeqstock.github.io/vst_guide/) in my personal website;
-- Use an external hardware synthesizer, connecting it to your PC's (or an external) sound card through a MIDI cable.
+If you don't possess any of these sensors you will still be able to try Netytar using your mouse, and play using the spacebar.
 
-## Download and install it
-Download the latest [Netytar Release](https://github.com/LIMUNIMI/Netytar/releases), **extract it** and run Netytar.exe. No installation is required (it is a portable application). Be careful to before install the **Software requirements and dependencies** listed above!
+## Installation and running
 
-Have fun!
+1. Download the latest release from the [Releases](https://github.com/LIMUNIMI/Netytar/releases)
+ page
+2. Unzip the archive
+3. Run `Netytar.exe`
 
-# Developer? Want to modify the code or compile it by yourself?
-Netytar's source code is released under [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html) Open Source license, thus you can access, modify, fork, republish its source code complying with that license (e.g. derived works should be published under the same license).
+## Contribution
 
-Netytar has been developed using C# programming language, and has dependencies to Windows .NET Framework 4.8 libraries and others. You may need [Microsoft Visual Studio IDE](https://visualstudio.microsoft.com/) in order to load the project and edit it.
-Netytar has a **strict dependency** to my NeeqDMIs Digital Musical Instrument prototyping framework. You should download it and replace the reference within Netytar project with NeeqDMIs path in your PC (or just place NeeqDMIs in the same root folder as Netytar's main folder.
+Netytar is licensed through a GNU GPL-v3 Free Open-Source software license. Feel free to fork this repository and contribute!
+### Dependencies
+- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0), which SDK and development tools can be automatically downloaded within the [Visual Studio](https://visualstudio.microsoft.com/it/downloads/) installer
+- Netychords depends on [NITHlibrary](https://github.com/LIMUNIMI/NITHlibrary) and [NITHdmis](https://github.com/LIMUNIMI/NITHdmis). Please clone both of them, and place them in an adjacent folder to your Netychords folder. Visual Studio should automatically locate them after opening `Netytar.sln`
 
-Don't hesitate to contact me or open an Issue on this repo if you encounter any problem loading the project.
+## Issues
+
+If you have any issue and/or proposal, please open a GitHub issue on the [Issues page](https://github.com/LIMUNIMI/Netytar/issues) of this repository, or write an e-mail to: *nicola(dot)davanzo(at)unimi(dot)it*
