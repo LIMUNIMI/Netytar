@@ -55,7 +55,7 @@ namespace Netytar.Behaviors.Pressure
 
                 input *= sensitivity; // Apply Sensitivity
                 if (input > 100) input = 100; // Maximum threshold of 100
-                Rack.NetytarDmiBox.BreathValue = input; // Provide "raw" input value to the instrument's logic module to update a graphical indicator
+                Rack.NetytarDmiBox.InputIndicatorValue = input; // Provide "raw" input value to the instrument's logic module to update a graphical indicator
                 input = inputMapper.Map(input); // Map to MIDI range 0-127
                 Rack.NetytarDmiBox.Pressure = (int)(input * pressureMultiplier); // Update instrument logic by changing MIDI channel pressure
                 Rack.NetytarDmiBox.Modulation = (int)(input / modulationDivider); // Change modulation
@@ -63,7 +63,7 @@ namespace Netytar.Behaviors.Pressure
                 // Check the double threshold to determine whether to send a note on/note off (the "Blow" in the instrument's logic)
                 if ((int)input > UPPERTHRESH && !Rack.NetytarDmiBox.Blow) Rack.NetytarDmiBox.Blow = true;
 
-                if ((int)input == LOWERTHRESH) Rack.NetytarDmiBox.Blow = false;
+                if ((int)input <= LOWERTHRESH) Rack.NetytarDmiBox.Blow = false;
             }
         }
     }

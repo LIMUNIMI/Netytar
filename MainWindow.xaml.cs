@@ -1,4 +1,5 @@
-﻿using Netytar.Modules;
+﻿using System.Security.AccessControl;
+using Netytar.Modules;
 using NITHdmis.Music;
 using NITHlibrary.Tools.Logging;
 using System.Windows;
@@ -545,6 +546,7 @@ namespace Netytar
             indTeeth.Background = Rack.UserSettings.InteractionMethod == NetytarInteractionMethods.Teeth ? ActiveBrush : BlankBrush;
             indHeadYaw.Background = Rack.UserSettings.InteractionMethod == NetytarInteractionMethods.HeadYaw ? ActiveBrush : BlankBrush;
             indKeyboard.Background = Rack.UserSettings.InteractionMethod == NetytarInteractionMethods.Keyboard ? ActiveBrush : BlankBrush;
+            indMouthAperture.Background = Rack.UserSettings.InteractionMethod == NetytarInteractionMethods.Mouth ? ActiveBrush : BlankBrush;
             indRootNoteColor.Background = Rack.ColorCode.FromAbsNote(Rack.UserSettings.RootNote);
             indScaleMajor.Background = (Rack.UserSettings.ScaleCode == ScaleCodes.maj) ? ActiveBrush : BlankBrush;
             indScaleMinor.Background = (Rack.UserSettings.ScaleCode == ScaleCodes.min) ? ActiveBrush : BlankBrush;
@@ -574,34 +576,41 @@ namespace Netytar
 
         private void UpdateTimedVisuals(object sender, EventArgs e)
         {
-            if (NetytarStarted)
+            if (NetytarStarted && sender != null)
             {
-                if (SelectedScale.GetName().Equals(lastScale.GetName()) == false)
+                try
                 {
-                    lastScale = SelectedScale;
-                    Rack.NetytarDmiBox.NetytarSurface.Scale = SelectedScale;
-                    UpdateGUIVisuals();
-                }
+                    if (SelectedScale.GetName().Equals(lastScale.GetName()) == false)
+                    {
+                        lastScale = SelectedScale;
+                        Rack.NetytarDmiBox.NetytarSurface.Scale = SelectedScale;
+                        UpdateGUIVisuals();
+                    }
 
-                txtNoteName.Text = Rack.NetytarDmiBox.SelectedNote.ToStandardString();
-                txtPitch.Text = Rack.NetytarDmiBox.SelectedNote.ToPitchValue().ToString();
-                if (Rack.NetytarDmiBox.Blow)
+                    txtNoteName.Text = Rack.NetytarDmiBox.SelectedNote.ToStandardString();
+                    txtPitch.Text = Rack.NetytarDmiBox.SelectedNote.ToPitchValue().ToString();
+                    if (Rack.NetytarDmiBox.Blow)
+                    {
+                        txtIsBlowing.Text = "B";
+                    }
+                    else
+                    {
+                        txtIsBlowing.Text = "_";
+                    }
+
+                    prbBreathSensor.Value = Rack.NetytarDmiBox.InputIndicatorValue;
+
+                    if (Rack.RaiseClickEvent)
+                    {
+                        LastSettingsGazedButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                        Rack.RaiseClickEvent = false;
+                    }
+                }
+                catch
                 {
-                    txtIsBlowing.Text = "B";
+                    // Do nothing!
                 }
-                else
-                {
-                    txtIsBlowing.Text = "_";
-                }
-
-                prbBreathSensor.Value = Rack.NetytarDmiBox.BreathValue;
-
-                if (Rack.RaiseClickEvent)
-                {
-                    LastSettingsGazedButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                    Rack.RaiseClickEvent = false;
-                }
-
+                
             }
         }
 
@@ -663,6 +672,9 @@ namespace Netytar
                 case NetytarInteractionMethods.HeadYaw:
                     Rack.UserSettings.SensorIntensityHead -= 0.1f;
                     break;
+                case NetytarInteractionMethods.Mouth:
+                    Rack.UserSettings.SensorIntensityMouth -= 0.1f;
+                    break;
             }
 
             ChangeInteractionMethod();
@@ -683,6 +695,9 @@ namespace Netytar
                     break;
                 case NetytarInteractionMethods.HeadYaw:
                     Rack.UserSettings.SensorIntensityHead += 0.1f;
+                    break;
+                case NetytarInteractionMethods.Mouth:
+                    Rack.UserSettings.SensorIntensityMouth += 0.1f;
                     break;
             }
 
@@ -708,6 +723,9 @@ namespace Netytar
                 case NetytarInteractionMethods.HeadYaw:
                     txtSensingIntensity.Text = Rack.UserSettings.SensorIntensityHead.ToString("F1");
                     break;
+                case NetytarInteractionMethods.Mouth:
+                    txtSensingIntensity.Text = Rack.UserSettings.SensorIntensityMouth.ToString("F1");
+                    break;
                 default:
                     break;
             }
@@ -716,23 +734,34 @@ namespace Netytar
         private void ChangeInteractionMethod()
         {
             Rack.NithModuleSensor.SensorBehaviors.Clear();
+            Rack.NithModuleFaceCam.SensorBehaviors.Clear();
 
             switch (Rack.UserSettings.InteractionMethod)
             {
                 case NetytarInteractionMethods.HeadYaw:
                     Rack.NithModuleSensor.SensorBehaviors.Add(new NithSensorBehaviorYawPlay(Rack.UserSettings.SensorIntensityHead));
                     break;
-
                 case NetytarInteractionMethods.Breath:
                     Rack.NithModuleSensor.SensorBehaviors.Add(new NithSensorBehaviorPressurePlay(NithParameters.breath_press, Rack.UserSettings.SensorIntensityBreath, Rack.UserSettings.SensorIntensityBreath * 1.5f));
                     break;
-
                 case NetytarInteractionMethods.Teeth:
                     Rack.NithModuleSensor.SensorBehaviors.Add(new NithSensorBehaviorPressurePlay(NithParameters.teeth_press, Rack.UserSettings.SensorIntensityTeeth, Rack.UserSettings.SensorIntensityTeeth * 1.5f));
                     break;
-
                 case NetytarInteractionMethods.Keyboard:
                     break;
+                case NetytarInteractionMethods.Mouth:
+                    Rack.NithModuleFaceCam.SensorBehaviors.Add(new NithSensorBehaviorMouthAperture(Rack.UserSettings.SensorIntensityMouth));
+                    break;
+            }
+        }
+
+        private void BtnMouthAperture_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (NetytarStarted)
+            {
+                Rack.UserSettings.InteractionMethod = NetytarInteractionMethods.Mouth;
+                ChangeInteractionMethod();
+                UpdateGUIVisuals();
             }
         }
     }

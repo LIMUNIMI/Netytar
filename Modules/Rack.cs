@@ -33,7 +33,7 @@ namespace Netytar.Modules
         public static NetytarSettings UserSettings { get; set; } = new DefaultSettings();
         public static MouseModule MouseModule { get; set; }
         public static NithSensorBehavior_GazeToMouse GazeToMouse { get; set; }
-
-        // TODO
+        public static UDPreceiver UDPreceiverFaceCam { get; set; }
+        public static NithModule NithModuleFaceCam { get; set; }
     }
 }

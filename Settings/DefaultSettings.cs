@@ -30,6 +30,7 @@ namespace Netytar.Settings
             SensorIntensityBreath = 1f;
             SensorIntensityTeeth = 1f;
             SensorIntensityHead = 1f;
+            SensorIntensityMouth = 1f;
         }
     }
 }

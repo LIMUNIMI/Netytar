@@ -10,6 +10,7 @@ using NITHlibrary.Tools.Filters.PointFilters;
 using NITHlibrary.Tools.Ports;
 using RawInputProcessor;
 using System.Windows.Interop;
+using NITHlibrary.Nith.Wrappers.NithFaceCam;
 
 namespace Netytar.Modules
 {
@@ -34,9 +35,13 @@ namespace Netytar.Modules
             Rack.USBreceiverMotionSensor = new USBreceiver();
             Rack.NithModuleSensor = new NithModule();
             Rack.USBreceiverMotionSensor.Listeners.Add(Rack.NithModuleSensor);
-            //Rack.NithModuleSensor.SensorBehaviors.Add(new NithSensorBehaviorPressurePlay(NetytarInteractionMethods.Breath, 0.125f, 1, 8));
-            //Rack.NithModuleSensor.SensorBehaviors.Add(new NithSensorBehaviorPressurePlay(NetytarInteractionMethods.Teeth, 1f, 1, 1));
-            //Rack.NithModuleSensor.SensorBehaviors.Add(new NithSensorBehaviorYawPlay());
+            
+            // Mouth module
+            Rack.UDPreceiverFaceCam = new UDPreceiver(20100);
+            Rack.NithModuleFaceCam = new NithModule();
+            Rack.NithModuleFaceCam.Preprocessors.Add(new NithPreprocessor_FaceCam());
+            Rack.UDPreceiverFaceCam.Listeners.Add(Rack.NithModuleFaceCam);
+            Rack.UDPreceiverFaceCam.Connect();
 
             // Mouse Module
             Rack.MouseModule = new MouseModule();

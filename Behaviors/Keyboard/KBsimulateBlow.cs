@@ -21,7 +21,7 @@ namespace Netytar.Behaviors.Keyboard
                 {
                     blowing = true;
                     returnVal = 1;
-                    Rack.NetytarDmiBox.BreathValue = 127;
+                    Rack.NetytarDmiBox.InputIndicatorValue = 127;
                     Rack.NetytarDmiBox.Velocity = 127;
                     Rack.NetytarDmiBox.Pressure = 127;
                 }
@@ -29,7 +29,7 @@ namespace Netytar.Behaviors.Keyboard
                 {
                     blowing = false;
                     returnVal = 1;
-                    Rack.NetytarDmiBox.BreathValue = 0;
+                    Rack.NetytarDmiBox.InputIndicatorValue = 0;
                     Rack.NetytarDmiBox.Velocity = 0;
                     Rack.NetytarDmiBox.Pressure = 0;
                 }

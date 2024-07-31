@@ -3,15 +3,15 @@ using Netytar.Modules;
 using NITHlibrary.Nith.Internals;
 using NITHlibrary.Tools.Filters.ValueFilters;
 using NITHlibrary.Tools.Mappers;
+using static System.Double;
 
 namespace Netytar.Behaviors.Headtracker
 {
-    public class NithSensorBehaviorYawPlay(double pressureMultiplier = 1.0f, double velocityMultiplier = 1.5f)
+    public class NithSensorBehaviorYawPlay(double pressureMultiplier = 1.0f, double velocityMultiplier = 1.0f)
         : INithSensorBehavior
     {
-
-        private const int Deadspeed = 40;
-        private readonly ValueMapperDouble _pressureMapper = new(0.5f, 127);
+        private const double Deadspeed = 5f;
+        private readonly ValueMapperDouble _pressureMapper = new(127f, 127);
         private readonly DoubleFilterMAExpDecaying _speedFilter = new(0.8f);
         private int _currentDirection = 1;
         private int _previousDirection = 1;
@@ -24,32 +24,46 @@ namespace Netytar.Behaviors.Headtracker
         ///<param name="nithData">The NithSensorData object to handle.</param>
         public void HandleData(NithSensorData nithData)
         {
-                if (nithData.ContainsParameter(NithParameters.head_acc_yaw))
-                {
-                    HTStrum_ElaboratePosition(nithData);
-                }
+            if (nithData.ContainsParameter(NithParameters.head_acc_yaw))
+            {
+                HTStrum_ElaboratePosition(nithData);
+            }
         }
-        
 
         public void HTStrum_ElaboratePosition(NithSensorData nithData)
         {
-            _yawSpeed = double.Parse(nithData.GetParameter(NithParameters.head_acc_yaw).Value.Base, CultureInfo.InvariantCulture);
+            _yawSpeed = Parse(nithData.GetParameter(NithParameters.head_acc_yaw).Value.Base, CultureInfo.InvariantCulture);
             _previousDirection = _currentDirection;
             _currentDirection = Math.Sign(_yawSpeed);
+            _yawSpeed = Math.Abs(_yawSpeed);
+            _yawSpeed *= pressureMultiplier;
+            _yawSpeed = Math.Clamp(_yawSpeed - Deadspeed, 0f, PositiveInfinity);
 
             // Perché tutto 'sto casino?
             _speedFilter.Push(_yawSpeed);
-            _yawSpeedFiltered = _pressureMapper.Map(_speedFilter.Pull());
-            _yawSpeedFiltered = Math.Log(_yawSpeedFiltered, 1.5f) * pressureMultiplier;
+            _yawSpeedFiltered = Math.Abs(_pressureMapper.Map(_speedFilter.Pull()));
+            // _yawSpeedFiltered = Math.Log(_yawSpeedFiltered, 1.5f) * pressureMultiplier;
+            
 
-            Rack.NetytarDmiBox.Pressure = (int)_yawSpeedFiltered - Deadspeed;
+            Rack.NetytarDmiBox.Pressure = (int)(_yawSpeedFiltered);
+            Rack.NetytarDmiBox.InputIndicatorValue = (int)(_yawSpeedFiltered);
+            Rack.NetytarDmiBox.Velocity = (int) (_yawSpeedFiltered * velocityMultiplier);
 
-            if (_currentDirection != _previousDirection && Rack.NetytarDmiBox.Pressure > 0)
+            if (_yawSpeedFiltered <= 0)
             {
-                Rack.NetytarDmiBox.Velocity = (int)(_yawSpeedFiltered * velocityMultiplier - Deadspeed);
                 Rack.NetytarDmiBox.Blow = false;
+            }
+            else if (_yawSpeedFiltered > 0)
+            {
                 Rack.NetytarDmiBox.Blow = true;
             }
+
+            //if (_currentDirection != _previousDirection && _yawSpeedFiltered > 0)
+            //{
+            //    Rack.NetytarDmiBox.Velocity = (int)(_yawSpeedFiltered * velocityMultiplier);
+            //    Rack.NetytarDmiBox.Blow = false;
+            //    Rack.NetytarDmiBox.Blow = true;
+            //}
         }
     }
 }

@@ -284,7 +284,7 @@ namespace Netytar.Modules
         public double HeadPoseBaseX { get => eyePosBaseX; set => eyePosBaseX = value; }
         public double HeadPoseBaseY { get => eyePosBaseY; set => eyePosBaseY = value; }
         public double HeadPoseBaseZ { get => eyePosBaseZ; set => eyePosBaseZ = value; }
-        public double BreathValue { get; internal set; } = 0;
+        public double InputIndicatorValue { get; internal set; } = 0;
 
         public void CalibrateAccBase()
         {

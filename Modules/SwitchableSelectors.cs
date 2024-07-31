@@ -1,12 +1,6 @@
 ﻿namespace Netytar.Modules
 {
 
-    public enum _Eyetracker
-    {
-        Tobii,
-        Eyetribe
-    }
-
     public enum NetytarInteractionMethods
     {
         Keyboard,
@@ -14,7 +8,8 @@
         Teeth,
         EyePos,
         EyeVel,
-        HeadYaw
+        HeadYaw,
+        Mouth
     }
 
     public enum _ModulationControlModes

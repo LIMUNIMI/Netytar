@@ -273,7 +273,7 @@
 
                     <!-- Control selector -->
                     <Label Content="Interaction method" />
-                    <UniformGrid Columns="2" Rows="2">
+                    <UniformGrid Columns="2" Rows="3">
                         <Button Name="btnKeyboard" Style="{StaticResource DWoodLeft}" Click="btnKeyboard_Click">
                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="4,0,0,0">
                                 <Border Name="indKeyboard" Style="{StaticResource Indicator}" />
@@ -296,6 +296,12 @@
                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="4,0,0,0">
                                 <Border Name="indHeadYaw" Style="{StaticResource Indicator}" />
                                 <Label Content="Head (yaw)" VerticalAlignment="Center" FontSize="18" Style="{StaticResource ButtonLabel}"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="btnMouthAperture" Style="{StaticResource DWoodLeft}" Click="BtnMouthAperture_OnClick">
+                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="4,0,0,0">
+                                <Border Name="indMouthAperture" Style="{StaticResource Indicator}" />
+                                <Label Content="Mouth" VerticalAlignment="Center" FontSize="18" Style="{StaticResource ButtonLabel}"/>
                             </StackPanel>
                         </Button>
                     </UniformGrid>
